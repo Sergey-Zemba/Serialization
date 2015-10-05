@@ -7,20 +7,18 @@ using System.Threading.Tasks;
 namespace EmployeeDatabase
 {
     [Serializable]
-    class Employee
+    public class Employee
     {
-        private static int id;
-
         public Employee()
         {
             
         }
-        public Employee(string firstName, string surname, string position)
+        public Employee(string firstName, string surname, string position, int id)
         {
             FirstName = firstName;
             Surname = surname;
             Position = position;
-            ID = ++id;
+            ID = id;
         }
         public int ID { get; set; }
         public string FirstName { get; set; }
