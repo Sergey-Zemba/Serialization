@@ -11,8 +11,8 @@ namespace EmployeeDatabase
 {
     class Management
     {
-        private XmlSerializer serializer;
-        private BinaryFormatter formatter;
+        private XmlSerializer serializer = new XmlSerializer(typeof(List<Employee>));
+        private BinaryFormatter formatter = new BinaryFormatter();
         private string type;
         List<Employee> employees;
 
@@ -26,16 +26,12 @@ namespace EmployeeDatabase
                     byte[] array = new byte[fs.Length];
                     fs.Read(array, 0, array.Length);
                     type = System.Text.Encoding.Default.GetString(array).ToLower();
-                    serializer = new XmlSerializer(typeof(List<Employee>));
-                    formatter = new BinaryFormatter();
                     LoadDatabase(type);
                 }
             }
             catch (FileNotFoundException ex)
             {
                 type = "bin";
-                formatter = new BinaryFormatter();
-                serializer = new XmlSerializer(typeof (List<Employee>));
                 using (FileStream fs = new FileStream("option.ini", FileMode.Create))
                 {
                     byte[] array = System.Text.Encoding.Default.GetBytes(type);
