@@ -11,12 +11,9 @@ namespace EmployeeDatabase
 {
     class Management
     {
-        private XmlSerializer serializer = new XmlSerializer(typeof(List<Employee>));
-        private BinaryFormatter formatter = new BinaryFormatter();
         private string type;
-        List<Employee> employees;
-
-
+        List<Employee> employees = new List<Employee>();
+        private IReadingWriting irw;
         public void Start()
         {
             try
@@ -26,53 +23,34 @@ namespace EmployeeDatabase
                     byte[] array = new byte[fs.Length];
                     fs.Read(array, 0, array.Length);
                     type = System.Text.Encoding.Default.GetString(array).ToLower();
-                    LoadDatabase(type);
+                    if (type == "xml")
+                    {
+                        irw = new XmlReadingWriting();
+                    }
+                    else
+                    {
+                        irw = new BinaryReadingWriting();
+                    }
+                    LoadDatabase(irw);
                 }
             }
             catch (FileNotFoundException ex)
             {
-                type = "bin";
+                type = "xml";
                 using (FileStream fs = new FileStream("option.ini", FileMode.Create))
                 {
                     byte[] array = System.Text.Encoding.Default.GetBytes(type);
                     fs.Write(array, 0, array.Length);
                 }
-                LoadDatabase(type);
+                irw = new XmlReadingWriting();
+                LoadDatabase(irw);
             }
         }
 
-        private void LoadDatabase(string type)
+        private void LoadDatabase(IReadingWriting irw)
         {
-            if (type == "xml")
-            {
-                using (FileStream fs = new FileStream("xmlEmployees.xml", FileMode.OpenOrCreate))
-                {
-                    if (fs.Length != 0)
-                    {
-                        employees = (List<Employee>)serializer.Deserialize(fs);
-                    }
-                    else
-                    {
-                        employees = new List<Employee>();
-                    }
-                }
-                DoAction();
-            }
-            else
-            {
-                using (FileStream fs = new FileStream("binEmployees.dat", FileMode.OpenOrCreate))
-                {
-                    if (fs.Length != 0)
-                    {
-                        employees = (List<Employee>)formatter.Deserialize(fs);
-                    }
-                    else
-                    {
-                        employees = new List<Employee>();
-                    }
-                }
-                DoAction();
-            }
+            irw.Read(employees);
+            DoAction();
         }
 
         private void DoAction()
@@ -92,7 +70,7 @@ namespace EmployeeDatabase
                             AddEmployee();
                             break;
                         case "2":
-                            Exit();
+                            Exit(irw);
                             return;
                         default:
                             continue;
@@ -120,7 +98,7 @@ namespace EmployeeDatabase
                         GetEmployees();
                         break;
                     case "5":
-                        Exit();
+                        Exit(irw);
                         return;
                     default:
                         continue;
@@ -218,16 +196,9 @@ namespace EmployeeDatabase
             Console.ReadLine();
         }
 
-        private void Exit()
+        private void Exit(IReadingWriting irw)
         {
-            using (FileStream fs = new FileStream("xmlEmployees.xml", FileMode.OpenOrCreate))
-                {
-                    serializer.Serialize(fs, employees);
-                }
-            using (FileStream fs = new FileStream("binEmployees.dat", FileMode.OpenOrCreate))
-                {
-                    formatter.Serialize(fs, employees);
-                }
+            irw.Write(employees);
         }
     }
 }
