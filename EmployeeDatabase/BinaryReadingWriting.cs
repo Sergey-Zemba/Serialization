@@ -30,7 +30,7 @@ namespace EmployeeDatabase
 
         public void Write(List<Employee> employees)
         {
-            using (FileStream fs = new FileStream("binEmployees.dat", FileMode.OpenOrCreate))
+            using (FileStream fs = new FileStream("binEmployees.dat", FileMode.Create))
             {
                 formatter.Serialize(fs, employees);
             }

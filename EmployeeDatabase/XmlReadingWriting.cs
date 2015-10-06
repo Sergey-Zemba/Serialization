@@ -8,9 +8,9 @@ using System.Xml.Serialization;
 
 namespace EmployeeDatabase
 {
-    class XmlReadingWriting : IReadingWriting
+    internal class XmlReadingWriting : IReadingWriting
     {
-        XmlSerializer serializer = new XmlSerializer(typeof(List<Employee>));
+        private XmlSerializer serializer = new XmlSerializer(typeof (List<Employee>));
 
 
         public List<Employee> Read()
@@ -20,7 +20,7 @@ namespace EmployeeDatabase
             {
                 if (fs.Length != 0)
                 {
-                    employees = (List<Employee>)serializer.Deserialize(fs);
+                    employees = (List<Employee>) serializer.Deserialize(fs);
                 }
                 else
                 {
@@ -32,11 +32,12 @@ namespace EmployeeDatabase
 
         public void Write(List<Employee> employees)
         {
-            using (FileStream fs = new FileStream("xmlEmployees.xml", FileMode.OpenOrCreate))
+            using (FileStream fs = new FileStream("xmlEmployees.xml", FileMode.Create))
             {
                 serializer.Serialize(fs, employees);
             }
         }
+
 
     }
 }
