@@ -11,8 +11,9 @@ namespace EmployeeDatabase
     class BinaryReadingWriting : IReadingWriting
     {
         BinaryFormatter formatter = new BinaryFormatter();
-        public void Read(List<Employee> employees)
+        public List<Employee> Read()
         {
+            List<Employee> employees;
             using (FileStream fs = new FileStream("binEmployees.dat", FileMode.OpenOrCreate))
             {
                 if (fs.Length != 0)
@@ -24,6 +25,7 @@ namespace EmployeeDatabase
                     employees = new List<Employee>();
                 }
             }
+            return employees;
         }
 
         public void Write(List<Employee> employees)

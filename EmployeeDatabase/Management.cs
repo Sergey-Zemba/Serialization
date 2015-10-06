@@ -12,7 +12,7 @@ namespace EmployeeDatabase
     class Management
     {
         private string type;
-        List<Employee> employees = new List<Employee>();
+        List<Employee> employees;
         private IReadingWriting irw;
         public void Start()
         {
@@ -49,7 +49,7 @@ namespace EmployeeDatabase
 
         private void LoadDatabase(IReadingWriting irw)
         {
-            irw.Read(employees);
+            employees = irw.Read();
             DoAction();
         }
 

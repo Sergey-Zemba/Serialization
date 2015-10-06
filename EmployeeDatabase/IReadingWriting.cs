@@ -8,7 +8,7 @@ namespace EmployeeDatabase
 {
     interface IReadingWriting
     {
-        void Read(List<Employee> employees);
+        List<Employee> Read();
         void Write(List<Employee> employees);
     }
 }
